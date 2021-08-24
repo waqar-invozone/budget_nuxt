@@ -1,0 +1,50 @@
+<template>
+  <main>
+    <div class="font-sans">
+      <div
+        class="
+          relative
+          min-h-screen
+          flex flex-col
+          sm:justify-center
+          items-center
+          bg-gray-100
+        "
+      >
+        <div class="relative sm:max-w-sm w-full">
+          <div
+            class="
+              card
+              bg-blue-400
+              shadow-lg
+              w-full
+              h-full
+              rounded-3xl
+              absolute
+              transform
+              -rotate-6
+            "
+          ></div>
+          <div
+            class="
+              card
+              bg-red-400
+              shadow-lg
+              w-full
+              h-full
+              rounded-3xl
+              absolute
+              transform
+              rotate-6
+            "
+          ></div>
+          <div
+            class="relative w-full rounded-3xl px-6 py-4 bg-gray-100 shadow-md"
+          >
+            <Nuxt />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
