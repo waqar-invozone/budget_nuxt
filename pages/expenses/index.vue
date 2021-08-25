@@ -38,6 +38,11 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Expenses",
+  head() {
+    return {
+      title: "Expenses"
+    };
+  },
   data() {
     return {
       list: []
@@ -49,34 +54,19 @@ export default {
   methods: {
     async getData() {
       try {
-        let options = {
-          headers: {
-            token: "794c8145-dfda-41a5-9f83-51008a202f53"
-          }
-        };
-
-        // if (this.isAuth.token !== false) {
-        let data = await this.$axios.$get("/expenses", options);
+        let data = await this.$axios.$get("/expenses", this.headerOptions);
 
         this.list = [...data];
-
-        // } else {
-        //   this.$router.push("/login");
-        // }
       } catch (err) {
         console.log(err);
         this.list = [];
       }
     },
     async deleteExpense(expense) {
-      let options = {
-        headers: {
-          token: "794c8145-dfda-41a5-9f83-51008a202f53"
-        }
-      };
-
-      // if (this.isAuth.token !== false) {
-      let res = await this.$axios.$delete("/expenses/" + expense.id, options);
+      let res = await this.$axios.$delete(
+        "/expenses/" + expense.id,
+        this.headerOptions
+      );
       if (res.status == true) {
         this.list.splice(
           this.list.findIndex(item => item.id == expense.id),
@@ -87,6 +77,13 @@ export default {
   },
   computed: {
     ...mapGetters(["isAuth"]),
+    headerOptions() {
+      return {
+        headers: {
+          token: this.isAuth.token
+        }
+      };
+    },
     totalExpense() {
       if (this.list.length > 0) {
         return this.list.reduce((acc, item) => {

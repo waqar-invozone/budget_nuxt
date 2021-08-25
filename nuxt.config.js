@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "bf",
+    title: "Budget Nuxt",
     htmlAttrs: {
       lang: "en"
     },
@@ -18,8 +18,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
-
+  plugins: [{ src: "~/plugins/persistedState.client.js" }],
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 

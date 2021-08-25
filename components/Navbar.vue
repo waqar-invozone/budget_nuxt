@@ -77,10 +77,9 @@
         <div class="text-md font-bold text-blue-700 lg:flex-grow"></div>
 
         <div class="flex flex-col md:flex-row">
-          <template v-if="isAuth !== false">
-            <nuxt-link
-              to="/"
-              class="
+          <nuxt-link
+            to="/"
+            class="
                 block
                 text-md
                 px-4
@@ -94,8 +93,9 @@
                 hover:bg-blue-700
                 lg:mt-0
               "
-              >Home</nuxt-link
-            >
+            >Home</nuxt-link
+          >
+          <template v-if="isAuth">
             <!-- <nuxt-link
               to="/groups"
               class="
@@ -132,6 +132,25 @@
               "
               >Expenses</nuxt-link
             >
+
+            <a
+              href="javascript:void(0)"
+              class="
+                block
+                text-md
+                px-4
+                py-2
+                rounded
+                border
+                text-blue-900
+                ml-2
+                font-bold
+                mt-4
+                lg:mt-0
+              "
+              v-text="authUser.username"
+            ></a>
+
             <a
               href="javascript:void(0)"
               class="
@@ -202,22 +221,23 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      isAuth: true,
       menuHidden: true
     };
   },
+  mounted() {},
   methods: {
     ...mapMutations(["logout"]),
     toggleMenu() {
       if (this.menuHidden) return (this.menuHidden = false);
       return (this.menuHidden = true);
+    },
+    logout() {
+      this.$store.commit("logout");
+      this.$router.push({ name: "Login" });
     }
-    // logout() {
-    //   this.$store.commit("logout");
-    // }
   },
   computed: {
-    // ...mapGetters(["isAuth"])
+    ...mapGetters(["isAuth", "authUser"])
   }
 };
 </script>

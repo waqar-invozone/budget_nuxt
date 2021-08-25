@@ -6,7 +6,12 @@
     >
       Register
     </label>
-    <form method="#" action="#" class="mt-10" autocomplete="off">
+    <alert
+      :message="error.message"
+      :type="error.type"
+      @clear="error.message = ''"
+    ></alert>
+    <form @submit.prevent="register" class="mt-10" autocomplete="off">
       <div>
         <input
           type="text"
@@ -25,6 +30,7 @@
             hover:bg-gray-100
             focus:bg-gray-100 focus:outline-none focus:ring
           "
+          required
         />
       </div>
 
@@ -46,12 +52,13 @@
             hover:bg-gray-100
             focus:bg-gray-100 focus:outline-none focus:ring
           "
+          required
         />
       </div>
 
       <div class="mt-7">
         <input
-          v-model="passwrod"
+          v-model="password"
           type="password"
           placeholder="Enter your password"
           name="password"
@@ -67,6 +74,7 @@
             hover:bg-gray-100
             focus:bg-gray-100 focus:outline-none focus:ring
           "
+          required
         />
       </div>
       <div class="mt-7">
@@ -114,34 +122,37 @@
 
 <script>
 export default {
-  layout: 'auth',
-  name: 'register',
+  layout: "auth",
+  name: "register",
   data() {
     return {
-      username: '',
-      email: '',
-      password: '',
-    }
+      username: "",
+      email: "",
+      password: "",
+      error: {
+        message: "",
+        type: ""
+      }
+    };
   },
   methods: {
     async register() {
       try {
-        let user = await this.$axios.post('register', {
+        let { data } = await this.$axios.post("register", {
           username: this.username,
           email: this.email,
-          password: this.password,
-        })
+          password: this.password
+        });
 
-        await this.$auth.loginWith('local', {
-          data: {
-            email: this.email,
-            password: this.password,
-          },
-        })
+        if (data.status == true) {
+          this.$store.commit("login", data.data);
+          return this.$router.push("/");
+        }
+        this.error.message = data.message;
       } catch (err) {
-        console.log(e.response.data.message)
+        console.log(err.message);
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>

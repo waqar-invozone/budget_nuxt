@@ -6,6 +6,11 @@
     >
       Login
     </label>
+    <alert
+      :message="error.message"
+      :type="error.type"
+      @clear="error.message = ''"
+    ></alert>
     <form method="#" action="#" @submit.prevent="login" class="mt-10">
       <div>
         <input
@@ -111,7 +116,11 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      error: {
+        message: "",
+        type: ""
+      }
     };
   },
   methods: {
@@ -123,12 +132,10 @@ export default {
         });
 
         if (res.status == true) {
-          this.$store.commit("login", {
-            token: res.data.apiToken,
-            user: null
-          });
-          this.$router.push("/");
+          this.$store.commit("login", res.data);
+          return this.$router.push("/");
         } else {
+          this.error.message = res.message;
         }
       } catch (e) {
         this.error = e.response.data.message;

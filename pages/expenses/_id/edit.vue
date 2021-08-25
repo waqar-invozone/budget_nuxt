@@ -39,12 +39,6 @@
               ></textarea>
             </form-group>
 
-            <!-- <nuxt-link
-            to="/expenses"
-            class="px-3 py-2 bg-red-500 hover:bg-red-700 text-white rounded mr-1"
-          >
-            Cancel
-          </nuxt-link> -->
             <button
               type="button"
               @click="$router.push('/expenses')"
@@ -67,6 +61,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -81,13 +76,11 @@ export default {
   },
   async mounted() {
     try {
-      let options = {
-        headers: {
-          token: "794c8145-dfda-41a5-9f83-51008a202f53"
-        }
-      };
       this.expense_id = this.$route.params.id;
-      let res = await this.$axios.$get(`expenses/${this.expense_id}`, options);
+      let res = await this.$axios.$get(
+        `expenses/${this.expense_id}`,
+        this.headerOptions
+      );
 
       if (res.status === true) {
         let expense = res.data;
@@ -110,21 +103,16 @@ export default {
           return false;
         }
 
-        let options = {
-          headers: {
-            token: "794c8145-dfda-41a5-9f83-51008a202f53"
-          }
-        };
         let req_data = {
           type: this.type,
           amount: this.amount,
           description: this.description,
-          createdBy: 1
+          createdBy: this.isAuth.id
         };
         let res = await this.$axios.$put(
           "/expenses/" + this.expense_id,
           req_data,
-          options
+          this.headerOptions
         );
 
         if (res.status == true) {
@@ -134,15 +122,12 @@ export default {
             this.makeAlert("Already up to date", "info");
           }
           return;
-          // this.$router.push("/expenses");
         } else {
           this.alertType = "error";
           this.alertMessage = res.message;
         }
       } catch (err) {
-        console.log(err, "in error catch");
-        // this.alertMessage = err;
-        // this.alertType = "error";
+        console.error(err, "in error catch");
       }
     },
     validateData() {
@@ -160,6 +145,16 @@ export default {
       this.alertMessage = message;
       this.alertType = type;
     }
+  },
+  computed: {
+    headerOptions() {
+      return {
+        headers: {
+          token: this.isAuth.token
+        }
+      };
+    },
+    ...mapGetters(["isAuth"])
   }
 };
 </script>

@@ -1,18 +1,24 @@
 export const state = () => ({
-  token: false
+  user: null,
+  token: null
 });
 
 export const mutations = {
-  login(state, token) {
-    state.token = token;
+  login(state, user) {
+    state.user = user;
+    state.token = user.apiToken;
   },
   logout(state) {
-    state.token = false;
+    state.user = null;
+    state.token = null;
   }
 };
 
 export const getters = {
   isAuth(state) {
     return state.token;
+  },
+  authUser(state) {
+    return state.user;
   }
 };

@@ -39,12 +39,6 @@
               ></textarea>
             </form-group>
 
-            <!-- <nuxt-link
-            to="/expenses"
-            class="px-3 py-2 bg-red-500 hover:bg-red-700 text-white rounded mr-1"
-          >
-            Cancel
-          </nuxt-link> -->
             <button
               type="button"
               @click="$router.push({ name: 'expenses' })"
@@ -67,6 +61,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -86,29 +81,25 @@ export default {
 
         let options = {
           headers: {
-            token: "794c8145-dfda-41a5-9f83-51008a202f53"
+            token: this.isAuth.token
           }
         };
         let req_data = {
           type: this.type,
           amount: this.amount,
           description: this.description,
-          createdBy: 1
+          createdBy: this.isAuth.id
         };
         let res = await this.$axios.$post("/expenses", req_data, options);
 
         if (res.status == true) {
-          this.alertType = "success";
-          this.alertMessage = "Expense Added Successfully";
+          this.makeAlert("Expense Added Successfully", "success");
           this.$router.push("/expenses");
         } else {
-          this.alertType = "error";
-          this.alertMessage = res.message;
+          this.makeAlert(res.message, "error");
         }
       } catch (err) {
-        console.log(err, "in error catch");
-        // this.alertMessage = err;
-        // this.alertType = "error";
+        console.error(err, "in error catch");
       }
     },
     validateData() {
@@ -126,6 +117,9 @@ export default {
       this.alertMessage = message;
       this.alertType = type;
     }
+  },
+  computed: {
+    ...mapGetters(["isAuth", "authUser"])
   }
 };
 </script>
