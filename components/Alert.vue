@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mb-4 " @click="$emit('clear')">
+  <div class="w-full mb-4 cursor-pointer" @click="$emit('clear')">
     <div
       class="w-full p-3 text-white font-bold"
       v-show="message.length"

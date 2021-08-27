@@ -1,6 +1,10 @@
 <template>
-  <div class="w-full mb-4">
-    <label :for="id" class="w-full" v-text="label"></label><br />
+  <div class="w-full mb-4" :class="[inline ? 'flex flex-row' : '']">
+    <label
+      :for="id"
+      :class="[!inline ? 'w-full' : 'min-w-max pr-2']"
+      v-text="label"
+    ></label>
     <slot></slot>
   </div>
 </template>
@@ -14,7 +18,11 @@ export default {
     },
     id: {
       require: true
+    },
+    inline: {
+      default: false
     }
-  }
+  },
+  computed: {}
 };
 </script>

@@ -115,6 +115,9 @@
             Login
           </NuxtLink>
         </div>
+        <div class="flex justify-center items-center">
+          <nuxt-link :to="{ name: 'index' }"> Back to Home</nuxt-link>
+        </div>
       </div>
     </form>
   </section>
@@ -138,19 +141,23 @@ export default {
   methods: {
     async register() {
       try {
-        let { data } = await this.$axios.post("register", {
+        const credentials = {
           username: this.username,
           email: this.email,
           password: this.password
-        });
+        };
 
-        if (data.status == true) {
-          this.$store.commit("login", data.data);
+        const { result, msg } = await this.$store.dispatch(
+          "auth/register",
+          credentials
+        );
+        if (result) {
           return this.$router.push("/");
         }
-        this.error.message = data.message;
-      } catch (err) {
-        console.log(err.message);
+        this.error.message = msg;
+      } catch (e) {
+        this.error.message = e.message;
+        console.error(e.trace);
       }
     }
   }

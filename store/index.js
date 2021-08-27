@@ -1,24 +1,16 @@
-export const state = () => ({
-  user: null,
-  token: null
-});
-
-export const mutations = {
-  login(state, user) {
-    state.user = user;
-    state.token = user.apiToken;
-  },
-  logout(state) {
-    state.user = null;
-    state.token = null;
-  }
-};
-
-export const getters = {
-  isAuth(state) {
-    return state.token;
-  },
-  authUser(state) {
-    return state.user;
+export const actions = {
+  // https://nuxtjs.org/guide/vuex-store/#the-nuxtserverinit-action
+  // automatically refresh the access token on the initial request to the server, if possible
+  async nuxtServerInit({ dispatch, commit, state }) {
+    // console.log(state.auth);
+    // if (access_token) {
+    //   try {
+    //     // refresh the access token
+    //     await dispatch("auth/refresh");
+    //   } catch (e) {
+    //     // catch any errors and automatically logout the user
+    //     await dispatch("auth/logout");
+    //   }
+    // }
   }
 };

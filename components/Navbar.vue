@@ -78,7 +78,7 @@
 
         <div class="flex flex-col md:flex-row">
           <nuxt-link
-            to="/"
+            :to="{ name: 'index' }"
             class="
                 block
                 text-md
@@ -95,9 +95,28 @@
               "
             >Home</nuxt-link
           >
-          <template v-if="isAuth">
-            <!-- <nuxt-link
-              to="/groups"
+          <template v-if="isAuthenticated">
+            <nuxt-link
+              :to="{ name: 'friends' }"
+              class="
+                block
+                text-md
+                px-4
+                ml-2
+                py-2
+                rounded
+                text-blue-700
+                font-bold
+                hover:text-white
+                mt-4
+                hover:bg-blue-700
+                lg:mt-0
+              "
+              >Friends</nuxt-link
+            >
+
+            <nuxt-link
+              :to="{ name: 'groups' }"
               class="
                 block
                 text-md
@@ -113,9 +132,9 @@
                 lg:mt-0
               "
               >Groups</nuxt-link
-            > -->
+            >
             <nuxt-link
-              to="/expenses"
+              :to="{ name: 'expenses' }"
               class="
                 block
                 text-md
@@ -173,7 +192,7 @@
           </template>
           <template v-else>
             <nuxt-link
-              to="/register"
+              :to="{ name: 'register' }"
               class="
                 block
                 text-md
@@ -192,7 +211,7 @@
             >
 
             <nuxt-link
-              to="/login"
+              :to="{ name: 'login' }"
               class="
                 block
                 text-md
@@ -233,11 +252,14 @@ export default {
     },
     logout() {
       this.$store.commit("logout");
-      this.$router.push({ name: "Login" });
+      this.$router.push({ name: "login" });
     }
   },
   computed: {
-    ...mapGetters(["isAuth", "authUser"])
+    ...mapGetters({
+      isAuthenticated: "auth/isAuthenticated",
+      authUser: "auth/authUser"
+    })
   }
 };
 </script>

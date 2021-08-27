@@ -38,6 +38,7 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Expenses",
+  middleware: ["auth"],
   head() {
     return {
       title: "Expenses"
