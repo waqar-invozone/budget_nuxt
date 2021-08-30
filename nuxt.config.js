@@ -1,3 +1,5 @@
+import tailwindConfig from "./tailwind.config";
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -38,5 +40,8 @@ export default {
     common: {
       Accept: "application/json"
     }
+  },
+  tailwindConfig: {
+    theme: {}
   }
 };

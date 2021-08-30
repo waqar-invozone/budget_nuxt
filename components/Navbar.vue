@@ -236,7 +236,6 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -245,22 +244,16 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapMutations(["logout"]),
     toggleMenu() {
       if (this.menuHidden) return (this.menuHidden = false);
       return (this.menuHidden = true);
     },
-    logout() {
-      this.$store.commit("logout");
+    async logout() {
+      await this.$store.dispatch("auth/logout");
       this.$router.push({ name: "login" });
     }
   },
-  computed: {
-    ...mapGetters({
-      isAuthenticated: "auth/isAuthenticated",
-      authUser: "auth/authUser"
-    })
-  }
+  computed: {}
 };
 </script>
 

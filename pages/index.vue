@@ -1,7 +1,9 @@
 <template>
   <section class="p-4 md:flex w-full md:justify-center">
-    <div v-if="isAuthenticated">
-      <h1>Welcome {{ authUser.username }}</h1>
+    <div v-if="isAuthenticated" class="md:w-1/4">
+      <box>
+        <h1 class="text-md">Welcome {{ authUser.username }}</h1>
+      </box>
     </div>
     <div v-else class="md:w-1/4">
       <box>
@@ -12,19 +14,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
   name: "Home",
   head() {
     return {
       title: "Home"
     };
-  },
-  computed: {
-    ...mapGetters({
-      isAuthenticated: "auth/isAuthenticated",
-      authUser: "auth/authUser"
-    })
   }
 };
 </script>

@@ -15,13 +15,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ authId: "auth/authId", authUser: "auth/authUser" })
-    // hedaerOptions() {
-    //   return {
-    //     headers: {
-    //       token: this.isAuth
-    //     }
-    //   };
-    // }
+    ...mapGetters({
+      authId: "auth/authId",
+      authUser: "auth/authUser",
+      isAuthenticated: "auth/isAuthenticated"
+    })
   }
 };

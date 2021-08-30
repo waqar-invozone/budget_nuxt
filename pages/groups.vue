@@ -30,7 +30,7 @@
             <li v-for="user in group.users" :key="user.id">
               {{ user.username }}
               <span class="text-gray-400">{{
-                user.id == userId ? " ~you" : ""
+                user.id == authId ? " ~you" : ""
               }}</span>
             </li>
           </ul>
@@ -43,9 +43,12 @@
               >
                 Edit
               </button>
-              <!-- <button class="bg-red-400 px-2 py-1 text-white rounded">
+              <button
+                class="bg-blue-600 px-2 py-1 text-white rounded"
+                @click="showAddFriendPopup(group)"
+              >
                 Add Friend
-              </button> -->
+              </button>
               <button
                 class="bg-red-400 px-2 py-1 text-white rounded"
                 v-if="isCreator(group)"
@@ -112,13 +115,42 @@
         </button>
       </template>
     </pop-up>
+
+    <!-- Add Friend PopUp -->
+    <pop-up ref="addFriend" :heading="`Add friend to ${edit_group_title}`">
+      <template v-slot:content>
+        <form-group label="Group Name :" id="name" inline="true">
+          <!-- show list of friends not already in the group -->
+          <select
+            class="w-full border border-gray-500 p-1 rounded"
+            v-model="userIdToAddToGroup"
+          >
+            <option value="">Select Friend</option>
+            <option
+              :value="friend.id"
+              v-for="friend in friends"
+              :key="friend.id"
+              v-text="friend.username"
+            ></option>
+          </select>
+        </form-group>
+      </template>
+      <template v-slot:action>
+        <button
+          type="button"
+          class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white"
+          @click="addUserToGroup()"
+        >
+          Add
+        </button>
+      </template>
+    </pop-up>
   </section>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
+  name: "Groups",
   middleware: ["auth"],
   data() {
     return {
@@ -128,6 +160,8 @@ export default {
         name: null,
         id: null
       },
+      userIdToAddToGroup: 0,
+      friends: [],
       groups: [],
       alert: {
         message: "",
@@ -137,6 +171,7 @@ export default {
   },
   mounted() {
     this.getGroups();
+    this.getFriends();
   },
   methods: {
     async getGroups() {
@@ -148,6 +183,25 @@ export default {
         console.error(error.message);
       }
     },
+    async getFriends() {
+      try {
+        let { requests, friends } = await this.$axios.$get(
+          "friends/" + this.authId
+        );
+        let ids = requests.reduce((acc, item) => {
+          if (item.status == "accept") {
+            if (item.userId == this.authId) acc.push(item.friendId);
+            acc.push(item.userId);
+          }
+          return acc;
+        }, []);
+
+        this.friends = friends.filter(item => ids.includes(item.id));
+      } catch (e) {
+        console.error(e.message);
+      }
+    },
+
     async addGroup() {
       try {
         if (this.new_group.length > 0) {
@@ -210,11 +264,41 @@ export default {
         console.error(error.message);
       }
     },
-    selectGroupForEdit(group) {
+    async addFriendToGroup() {
+      await this.$axios.$post();
+    },
+    async addUserToGroup() {
+      try {
+        let group = this.groups.find(item => item.id == this.edit_group.id);
+        let user = this.friends.find(
+          item => item.id == this.userIdToAddToGroup
+        );
+
+        if (group.users.find(item => item.id == this.userIdToAddToGroup)) {
+          return this.makeAlert("User already in group");
+        }
+
+        let res = await this.$axios.$post(
+          "/groups/user/" + this.edit_group.id + "/" + this.userIdToAddToGroup
+        );
+
+        if (res) {
+          group.users.push(user);
+          this.clearEditGroup();
+          this.$refs.addFriend.hide();
+          this.userIdToAddToGroup = "";
+          return this.makeAlert("User added in group", "success");
+        }
+      } catch (e) {
+        console.error(e.message);
+        this.makeAlert("Something went wrong");
+      }
+    },
+    selectGroupForEdit(group, showpopup = true) {
       const { id, name, ...other } = group;
       this.edit_group = { id, name };
       this.edit_group_title = name;
-      this.$refs.editGroup.show();
+      if (showpopup) this.$refs.editGroup.show();
     },
     clearEditGroup() {
       this.edit_group = { id: null, name: null };
@@ -226,23 +310,13 @@ export default {
       this.alert.type = type;
     },
     isCreator(group) {
-      return this.userId == group.creator.id;
+      return this.authId == group.creator.id;
+    },
+    showAddFriendPopup(group) {
+      this.$refs.addFriend.show();
+      this.selectGroupForEdit(group, false);
     }
   },
-  computed: {
-    ...mapGetters(["isAuth", "authUser"]),
-    userId() {
-      if (this.authUser) return this.authUser.id;
-      return 0;
-    },
-
-    hedaerOptions() {
-      return {
-        headers: {
-          token: this.isAuth
-        }
-      };
-    }
-  }
+  computed: {}
 };
 </script>
