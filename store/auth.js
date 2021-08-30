@@ -62,12 +62,12 @@ export const actions = {
     // };
     try {
       // make an API call to register the user
-      const { status, res } = await this.$axios.post("register", request_data);
+      const { status, data } = await this.$axios.post("register", request_data);
 
-      if (res.status == true) {
+      if (data.status == true) {
         // commit the user and tokens to the state
-        commit(AUTH_MUTATIONS.SET_USER, res.data);
-        commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.apiToken);
+        commit(AUTH_MUTATIONS.SET_USER, data.data);
+        commit(AUTH_MUTATIONS.SET_PAYLOAD, data.data.apiToken);
         return {
           result: true,
           msg: "Register"
@@ -80,7 +80,7 @@ export const actions = {
     } catch (error) {
       return {
         result: false,
-        msg: e.message
+        msg: error.message
       };
     }
   },

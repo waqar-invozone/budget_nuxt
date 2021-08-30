@@ -155,9 +155,9 @@ export default {
           return this.$router.push("/");
         }
         this.error.message = msg;
-      } catch (e) {
-        this.error.message = e.message;
-        console.error(e.trace);
+      } catch (err) {
+        this.error.message = err.message;
+        console.error(err.trace);
       }
     }
   }
