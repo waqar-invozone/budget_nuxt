@@ -56,10 +56,6 @@ export const actions = {
   },
 
   async register({ commit }, request_data) {
-    // return {
-    //   result: true,
-    //   msg: "Login success"
-    // };
     try {
       // make an API call to register the user
       const { status, data } = await this.$axios.post("register", request_data);
